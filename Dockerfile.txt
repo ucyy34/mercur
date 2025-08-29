@@ -1,0 +1,29 @@
+# Root-level Dockerfile for Mercur (backend)
+FROM node:20-alpine
+
+# Sistem bağımlılıkları
+RUN apk add --no-cache libc6-compat
+
+# Çalışma dizini
+WORKDIR /app
+
+# Tüm repo'yu kopyala (monorepo; workspaces)
+COPY . .
+
+# Yarn Berry (Corepack) etkinleştir
+RUN corepack enable && corepack prepare yarn@stable --activate
+
+# Bağımlılıkları kur (lock uyumluysa immutable; değilse fallback)
+RUN yarn install --immutable || yarn install
+
+# Prod ortam
+ENV NODE_ENV=production
+
+# Backend çalışma dizini
+WORKDIR /app/apps/backend
+
+# Port (Railway kendi PORT’u enjekte eder)
+EXPOSE 9000
+
+# Migrate'i burada çalıştırmıyoruz; deploy sonrası Shell'de yapacağız
+CMD ["sh","-c","yarn medusa start -p ${PORT:-9000}"]
