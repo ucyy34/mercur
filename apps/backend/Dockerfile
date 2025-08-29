@@ -10,9 +10,11 @@ WORKDIR /app
 # Tüm repo'yu kopyala (monorepo; workspaces)
 COPY . .
 
-# Bağımlılıkları kur
-# (yarn.lock varsa --frozen-lockfile, yoksa normal)
-RUN yarn install --frozen-lockfile || yarn install
+# Yarn Berry (Corepack) etkinleştir
+RUN corepack enable && corepack prepare yarn@stable --activate
+
+# Bağımlılıkları kur (lock uyumluysa immutable; değilse fallback)
+RUN yarn install --immutable || yarn install
 
 # Prod ortam
 ENV NODE_ENV=production
@@ -20,11 +22,8 @@ ENV NODE_ENV=production
 # Backend çalışma dizini
 WORKDIR /app/apps/backend
 
-# Port (Railway kendi portunu ayarlasa da expose etmek sorun değil)
+# Port (Railway kendi PORT’u enjekte eder)
 EXPOSE 9000
 
-# ÖNEMLİ: Burada migrate ÇALIŞTIRMIYORUZ.
-# Migrate'i Railway Shell'de bir kere çalıştıracağız.
-
-# Sunucuyu başlat
-CMD ["yarn", "medusa", "start"]
+# Migrate'i burada çalıştırmıyoruz; deploy sonrası Shell'de yapacağız
+CMD ["sh","-c","yarn medusa start -p ${PORT:-9000}"]
