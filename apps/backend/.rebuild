@@ -1,4 +1,0 @@
-echo "rebuild $(date)" > apps/backend/.rebuild
-git add apps/backend/.rebuild
-git commit -m "chore: force railway snapshot"
-git push origin main
