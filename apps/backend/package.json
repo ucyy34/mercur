@@ -1,4 +1,3 @@
-
 {
   "name": "api",
   "version": "0.0.1",
@@ -14,9 +13,10 @@
     "medusa"
   ],
   "scripts": {
-    "build": "medusa build && ln -s .medusa/server/public/ public",
+    "build": "medusa build && ln -s .medusa/server/public/ public || true",
     "seed": "medusa exec ./src/scripts/seed.ts",
-    "start": "medusa start --types=false",
+    "prestart": "medusa db:migrate",
+    "start": "medusa start --types=false --host 0.0.0.0 --port $PORT",
     "dev": "medusa develop --types=false",
     "db:migrate": "medusa db:migrate",
     "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
@@ -32,28 +32,12 @@
     "@medusajs/cli": "2.8.6",
     "@medusajs/framework": "2.8.6",
     "@medusajs/medusa": "2.8.6",
-    "@mercurjs/framework": "*",
-    "@mercurjs/configuration": "*",
-    "@mercurjs/marketplace": "*",
-    "@mercurjs/seller": "*",
-    "@mercurjs/reviews": "*",
-    "@mercurjs/payout": "*",
-    "@mercurjs/brand": "*",
-    "@mercurjs/commission": "*",
-    "@mercurjs/wishlist": "*",
-    "@mercurjs/attribute": "*",
-    "@mercurjs/order-return-request": "*",
-    "@mercurjs/requests": "*",
-    "@mercurjs/split-order-payment": "*",
-    "@mercurjs/taxcode": "*",
-    "@mercurjs/resend": "*",
-    "@mercurjs/stripe-tax-provider": "*",
-    "@mercurjs/payment-stripe-connect": "*",
     "@mikro-orm/core": "6.4.3",
     "@mikro-orm/knex": "6.4.3",
     "@mikro-orm/migrations": "6.4.3",
     "@mikro-orm/postgresql": "6.4.3",
     "@talkjs/react": "^0.1.11",
+    "algoliasearch": "^5.20.2",
     "awilix": "^8.0.1",
     "pg": "^8.13.0",
     "resend": "^4.1.2",
@@ -85,6 +69,6 @@
     "vite": "^5.2.11"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=20 <21"
   }
 }
