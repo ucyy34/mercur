@@ -26,34 +26,6 @@ module.exports = defineConfig({
     { resolve: '@mercurjs/wishlist' },
     { resolve: '@mercurjs/split-order-payment' },
     { resolve: '@mercurjs/attribute' },
-    {
-      resolve: '@mercurjs/taxcode',
-      options: {
-        apiKey: process.env.STRIPE_SECRET_API_KEY
-      }
-    },
-    { resolve: '@mercurjs/commission' },
-    {
-      resolve: '@mercurjs/payout',
-      options: {
-        apiKey: process.env.STRIPE_SECRET_API_KEY,
-        webhookSecret: process.env.STRIPE_CONNECTED_ACCOUNTS_WEBHOOK_SECRET
-      }
-    },
-    {
-      resolve: '@medusajs/medusa/payment',
-      options: {
-        providers: [
-          {
-            resolve: '@mercurjs/payment-stripe-connect',
-            id: 'stripe-connect',
-            options: {
-              apiKey: process.env.STRIPE_SECRET_API_KEY
-    
-            }
-          }
-        ]
-      }
-    }
+    { resolve: '@mercurjs/commission' }
   ]
 })
