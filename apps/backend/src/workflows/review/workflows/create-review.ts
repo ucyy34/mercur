@@ -8,8 +8,7 @@ import {
   createRemoteLinkStep,
   emitEventStep
 } from '@medusajs/medusa/core-flows'
-
-import { AlgoliaEvents, CreateReviewDTO } from '@mercurjs/framework'
+'
 import { REVIEW_MODULE } from '@mercurjs/reviews'
 import { SELLER_MODULE } from '@mercurjs/seller'
 
