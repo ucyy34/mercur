@@ -1,25 +1,37 @@
-# Root-level Dockerfile for Mercur (backend)
-FROM node:20-alpine
-
-# Sistem bağımlılığı
-RUN apk add --no-cache libc6-compat
-
-# Kök çalışma dizini
+# ---- base ----
+FROM node:20-bookworm-slim AS base
 WORKDIR /app
+ENV NODE_ENV=development
+# Node 20 zaten corepack ile geliyor ama versiyonu sabitleyelim:
+RUN corepack enable && corepack prepare yarn@1.22.21 --activate
 
-# Tüm monorepo'yu kopyala
-COPY . .
+# ---- deps (install) ----
+FROM base AS deps
+COPY package.json yarn.lock ./
+# monorepo ise install öncesi workspace package.json'larını da kopyalamak cache için iyi olur
+COPY apps ./apps
+COPY packages ./packages
+# sadece lockfile'a göre kur (CI dostu)
+RUN --mount=type=cache,target=/root/.cache/yarn \
+    yarn install --frozen-lockfile
 
-# Yarn Berry'yi (Corepack) etkinleştir ve bağımlılıkları kur
-RUN corepack enable && corepack prepare yarn@stable --activate
-RUN yarn install --immutable || yarn install
+# ---- build ----
+FROM base AS build
+COPY --from=deps /app /app
+RUN yarn build
 
-# Prod ortam
+# ---- run ----
+FROM node:20-bookworm-slim AS run
+WORKDIR /app
 ENV NODE_ENV=production
+RUN corepack enable && corepack prepare yarn@1.22.21 --activate
+# Sadece gerekenleri kopyala (dist + prod deps için node_modules yeniden kurulabilir)
+COPY package.json yarn.lock ./
+COPY --from=build /app/dist ./dist
+# Prod bağımlılıkları (yoksa atla)
+RUN --mount=type=cache,target=/root/.cache/yarn \
+    yarn install --frozen-lockfile --production
 
-# Backend dizinine geç ve servis portunu aç
-WORKDIR /app/apps/backend
-EXPOSE 9000
-
-# Sunucuyu başlat (Railway'in verdiği $PORT'u kullan)
-CMD ["sh","-c","yarn medusa start -p ${PORT:-9000}"]
+EXPOSE 3000
+# Uygulamanın entrypoint'i neyse ona göre güncelle
+CMD ["node", "dist/index.js"]
