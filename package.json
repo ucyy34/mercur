@@ -5,6 +5,7 @@
   "devDependencies": {
     "turbo": "^2.3.3"
   },
+  "engines": { "node": ">=20 <21" },
   "bin": {
     "mercur-exec": "./index.js"
   },
@@ -21,6 +22,8 @@
     "format": "turbo run format",
     "lint": "turbo run lint",
     "codegen": "cd .",
-    "generate:oas": "turbo run generate:oas"
+    "generate:oas": "turbo run generate:oas",
+    "build:backend": "turbo run build --filter=api",
+    "start:backend": "yarn workspace api start"
   }
 }
