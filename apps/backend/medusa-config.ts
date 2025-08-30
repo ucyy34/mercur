@@ -27,5 +27,6 @@ module.exports = defineConfig({
     { resolve: '@mercurjs/split-order-payment' },
     { resolve: '@mercurjs/attribute' },
     { resolve: '@mercurjs/commission' }
+    // taxcode tamamen çıkarıldı
   ]
 })
