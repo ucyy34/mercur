@@ -1,8 +1,6 @@
 import { Modules } from '@medusajs/framework/utils'
 import { updateProductTagsWorkflow } from '@medusajs/medusa/core-flows'
 
-import { AlgoliaEvents } from '@mercurjs/framework'
-
 updateProductTagsWorkflow.hooks.productTagsUpdated(
   async ({ product_tags }, { container }) => {
     const productIds = product_tags
