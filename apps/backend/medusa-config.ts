@@ -49,21 +49,7 @@ module.exports = defineConfig({
             id: 'stripe-connect',
             options: {
               apiKey: process.env.STRIPE_SECRET_API_KEY
-            }
-          }
-        ]
-      }
-    },
-    {
-      resolve: '@medusajs/medusa/notification',
-      options: {
-        providers: [
-          },
-          {
-            resolve: '@medusajs/medusa/notification-local',
-            id: 'local',
-            options: {
-              channels: ['feed', 'seller_feed']
+    
             }
           }
         ]
